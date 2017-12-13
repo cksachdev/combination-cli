@@ -117,12 +117,16 @@ rl.on('close', () => {
 function generateCombinations(DATA,SEQUENCE_LENGTH) {
   return new Promise((resolve, reject) => {
     cmb = Combinatorics.baseN(DATA, SEQUENCE_LENGTH);
+    var cmb_length = cmb.toArray().length;
+    console.log("length if cmb",cmb_length);
     var count = 0;
     try {
       while (a = cmb.next()) {
         if(end_index!= undefined){
          // console.log("end index is definedd");
+         console.log("outside",a.toString().replace(/,/g, ''));
         if (count >= start_index && count < end_index) {
+          console.log("inside",a.toString().replace(/,/g, ''));
           writeStream.write(URL +PUBLISHER_ID+'-'+ a.toString().replace(/,/g, '') + '\n');
         }
         }
@@ -134,7 +138,7 @@ function generateCombinations(DATA,SEQUENCE_LENGTH) {
         }
         }
         
-        if (cmb.next() == undefined){
+        if (count==cmb_length){
           console.log("done");
           resolve("generated all combinations");
         }
