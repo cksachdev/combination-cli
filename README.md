@@ -25,14 +25,15 @@ http://abcd.efgh/c/ABCD-000006
 .    
 .    
 
-Get me first 1000    
+### Usage
+#### Get me first 1000    
 combination 1000    
 
-Get me from 100 - 500    
+#### Get me from 100 - 500    
 combination 100,500    
 
-Get me from 3000 - 5000    
+#### Get me from 3000 - 5000    
 combination 3000,5000    
 
-Edge cases    
+### Edge cases    
 1. e.g. for 2 digit, with values between 0-9; maximum combinations are 100, i.e. 0 to 99. If user inputs don't fall in that range, show a proper message and exit.    
