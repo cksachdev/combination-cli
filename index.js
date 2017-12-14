@@ -5,10 +5,10 @@ var Combinatorics = require('js-combinatorics');
 var replaceall = require("replaceall");
 //var Regex = require("regex");
 const fs = require('fs');
-const INPUT_DATA = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+const INPUT_DATA = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9","A", "B", "C", "D", "E", "F", "G", "H", "I", "G", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
 //, "A", "B", "C", "D", "E", "F", "G", "H", "I", "G", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
 const URL = "http://ekstep.in/co/"; // url to be concatenated
-const INPUT_SEQUENCE_LENGTH = 2; // length of the sequence 
+const INPUT_SEQUENCE_LENGTH = 5; // length of the sequence 
 const PUBLISHER_ID = "ABCD";
 const INPUT_PATTERN1 =  new RegExp(/^[0-9]+(,)+([0-9]+)?$/); //to Check two comma seprated numbers
 const INPUT_PATTERN2= new RegExp(/^[0-9]+([0-9]+)?$/); // to check only 1 number
@@ -28,13 +28,13 @@ var start_index;
 var end_index;
 var cmb, a;
 
-let writeStream = fs.createWriteStream('output.csv');
+//let writeStream = fs.createWriteStream('output.csv');
 
-writeStream.on('error', (e) => {
-  console.log('Program Exited with error code:',e.errno);
-   console.log('PLEASE CLOSE OUTPUT.CSV FILE IF ITS ALREADY OPEN');
-  process.exit();
-});
+// writeStream.on('error', (e) => {
+//   console.log('Program Exited with error code:',e.errno);
+//    console.log('PLEASE CLOSE OUTPUT.CSV FILE IF ITS ALREADY OPEN');
+//   process.exit();
+// });
 /**
 * to Get the Input from the user.
 *
@@ -119,42 +119,47 @@ function generateCombinations(DATA,SEQUENCE_LENGTH) {
   return new Promise((resolve, reject) => {
     cmb = Combinatorics.baseN(DATA, SEQUENCE_LENGTH);
     var cmb_length = cmb.toArray().length;
+    console.log("All arrays",cmb.toArray());
+    console.log("spliced array");
+    console.log(cmb.toArray().splice(start_index,end_index));
+    //resolve("All links have been generated successfully");
   //  console.log("length if cmb",cmb_length);
     var count = 0;
-    try {
-      while (a = cmb.next()) {
-        if(end_index!= undefined){
-         // console.log("end index is definedd");
-         //console.log("outside",a.toString().replace(/,/g, ''));
-        if (count >= start_index && count < end_index) {
-         // console.log("inside",a.toString().replace(/,/g, ''));
-          writeStream.write(URL +PUBLISHER_ID+'-'+ a.toString().replace(/,/g, '') + '\n');
-        }
-        }
-      else
-        {
-         // console.log("no end index");
-           if (count >= start_index ) {
-          writeStream.write(URL +PUBLISHER_ID+'-'+ a.toString().replace(/,/g, '') + '\n');
-        }
-        }
+    // try {
+    //   while (a = cmb.next()) {
+
+    //     if(end_index!= undefined){
+    //      // console.log("end index is definedd");
+    //      //console.log("outside",a.toString().replace(/,/g, ''));
+    //     if (count >= start_index && count < end_index) {
+    //      // console.log("inside",a.toString().replace(/,/g, ''));
+    //       writeStream.write(URL +PUBLISHER_ID+'-'+ a.toString().replace(/,/g, '') + '\n');
+    //     }
+    //     }
+    //   else
+    //     {
+    //      // console.log("no end index");
+    //        if (count >= start_index ) {
+    //       writeStream.write(URL +PUBLISHER_ID+'-'+ a.toString().replace(/,/g, '') + '\n');
+    //     }
+    //     }
         
-        if (count==cmb_length-1){
-         // console.log("done");
-          resolve("All links have been generated successfully");
-        }
-        count++;
-      }
-    }
-    catch (e) {
-      console.log("Exception Occurred", e)
-      process.exit();
-    }
+    //     if (count==cmb_length-1){
+    //      // console.log("done");
+    //       resolve("All links have been generated successfully");
+    //     }
+    //     count++;
+    //   }
+    // }
+    // catch (e) {
+    //   console.log("Exception Occurred", e)
+    //   process.exit();
+    // }
 
   })
 }
 
 
-writeStream.on('end', () => {
-  console.log('wrote all data to file');
-});
+// writeStream.on('end', () => {
+//   console.log('wrote all data to file');
+// });
