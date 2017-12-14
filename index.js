@@ -85,7 +85,7 @@ function getInput() {
 */
 
 function tryAgain() {
-  rl.question('Inputs are inavlid Press 1 to enter the input again or anything to exit: ', (answer) => {
+  rl.question('Entered inputs are invalid!! \nPress anything to exit or 1 to enter the inputs again: ', (answer) => {
    //  console.log("value entered by user in try again",answer);
     if (answer == 1) {
       getInput();
@@ -102,7 +102,7 @@ rl.on('close', () => {
   //console.log("Done taking inputs");
 
   generateCombinations(INPUT_DATA,INPUT_SEQUENCE_LENGTH).then((e) => {
-    console.log("Combinations has been created successfully");
+    //console.log("Combinations has been created successfully");
     console.log(e);
    // writeStream.end();
 
@@ -119,15 +119,15 @@ function generateCombinations(DATA,SEQUENCE_LENGTH) {
   return new Promise((resolve, reject) => {
     cmb = Combinatorics.baseN(DATA, SEQUENCE_LENGTH);
     var cmb_length = cmb.toArray().length;
-    console.log("length if cmb",cmb_length);
+  //  console.log("length if cmb",cmb_length);
     var count = 0;
     try {
       while (a = cmb.next()) {
         if(end_index!= undefined){
          // console.log("end index is definedd");
-         console.log("outside",a.toString().replace(/,/g, ''));
+         //console.log("outside",a.toString().replace(/,/g, ''));
         if (count >= start_index && count < end_index) {
-          console.log("inside",a.toString().replace(/,/g, ''));
+         // console.log("inside",a.toString().replace(/,/g, ''));
           writeStream.write(URL +PUBLISHER_ID+'-'+ a.toString().replace(/,/g, '') + '\n');
         }
         }
@@ -139,9 +139,9 @@ function generateCombinations(DATA,SEQUENCE_LENGTH) {
         }
         }
         
-        if (count==cmb_length){
-          console.log("done");
-          resolve("generated all combinations");
+        if (count==cmb_length-1){
+         // console.log("done");
+          resolve("All links have been generated successfully");
         }
         count++;
       }
