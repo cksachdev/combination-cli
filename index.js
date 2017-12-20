@@ -53,13 +53,13 @@ function validateInputs(answer) {
       if (end_index < start_index) {
         return false;
       }
-      spinner.start();  
+      
       return true;
     }
     else if (INPUT_PATTERN2.test(answer)) {
 
       start_index = answer;
-      spinner.start();  
+     
       return true;
 
     }
@@ -85,20 +85,19 @@ function validateInputs(answer) {
 getInput();
 
 function getInput() {
-  
- spinner = new Spinner({text:'Processing....'});
+
+  spinner = new Spinner({ text: 'Processing....' });
   rl.question('Enter the start and end position eg: 100,200 or only start position: ', (answer) => {
-   if(validateInputs(answer)){
-     
-     
-     console.log("starting spineer");
-    
-    rl.close();
-      
-   }
-   else{
+    if (validateInputs(answer)) {
+
+      spinner.start();
+      console.log("Preparing....")
+      rl.close();
+
+    }
+    else {
       tryAgain();
-   }
+    }
   });
 
 }
@@ -124,17 +123,17 @@ function tryAgain() {
 
 
 rl.on('close', () => {
-  
-  
+
+
   console.time(SUCCESS_TEXT);
-  generateCombinations(INPUT_DATA, INPUT_SEQUENCE_LENGTH,start_index,end_index).then((e) => {
+  generateCombinations(INPUT_DATA, INPUT_SEQUENCE_LENGTH, start_index, end_index).then((e) => {
     //console.log(e);
     writeStream.end();
-   // spinner.stop();
+    // spinner.stop();
   }).catch((e) => {
     console.log(e);
-    writeStream.destroy();
-   // spinner.stop();
+    writeStream.end();
+    // spinner.stop();
   })
 })
 
@@ -146,22 +145,27 @@ rl.on('close', () => {
 * @param {string} endIndex
 * @author Vaibhav Chaudhary
 */
-function generateCombinations(DATA, SEQUENCE_LENGTH,startIndex,endIndex) {
+function generateCombinations(DATA, SEQUENCE_LENGTH, startIndex, endIndex) {
   return new Promise((resolve, reject) => {
     var count = 0;
-    var genrated_sequence_count =0;
+    var genrated_sequence_count = 0;
     var cmb = Combinatorics.baseN(DATA, SEQUENCE_LENGTH);
     var cmb_length = cmb.length;
     //console.log("das", cmb_length,startIndex);
-    if ((startIndex!=undefined && startIndex > cmb_length) || (endIndex!=undefined && endIndex > cmb_length)){
+    if(endIndex-startIndex > MAX_LIMIT){
+      reject("Difference between start Index and end Index is more than Maximum Limit");
+      return next();
+      
+    }
+    if ((startIndex != undefined && startIndex > cmb_length) || (endIndex != undefined && endIndex > cmb_length)) {
       reject("Index is greater than the total number of sequences");
       return next();
     }
     else {
       cmb.filter((elem) => {
         //var cmb_length = cmb.length();
-        if (genrated_sequence_count == MAX_LIMIT  ) {
-         // console.log("MAx limit reached");
+        if (genrated_sequence_count == MAX_LIMIT) {
+          // console.log("MAx limit reached");
           resolve(count + " links have been generated successfully");
           return next();
         }
@@ -169,11 +173,11 @@ function generateCombinations(DATA, SEQUENCE_LENGTH,startIndex,endIndex) {
           if (endIndex != undefined) {
 
             if (count >= startIndex && count < endIndex) {
-              if(FLAG)
-              writeStream.write(URL + PUBLISHER_ID + SEPARATOR + elem.toString().replace(/,/g, '')+'\,'+PUBLISHER_ID + SEPARATOR + elem.toString().replace(/,/g, '') + '\n');
+              if (FLAG)
+                writeStream.write(URL + PUBLISHER_ID + SEPARATOR + elem.toString().replace(/,/g, '') + '\,' + PUBLISHER_ID + SEPARATOR + elem.toString().replace(/,/g, '') + '\n');
               else
-                 writeStream.write(URL + PUBLISHER_ID + SEPARATOR + elem.toString().replace(/,/g, '') + '\n');
-             genrated_sequence_count++
+                writeStream.write(URL + PUBLISHER_ID + SEPARATOR + elem.toString().replace(/,/g, '') + '\n');
+              genrated_sequence_count++
             }
             else if (count > endIndex - 1) {
               resolve("All links have been generated successfully");
@@ -182,11 +186,11 @@ function generateCombinations(DATA, SEQUENCE_LENGTH,startIndex,endIndex) {
           }
           else {
             if (count >= startIndex) {
-              if(FLAG)
-              writeStream.write(URL + PUBLISHER_ID + SEPARATOR + elem.toString().replace(/,/g, '')+'\,'+PUBLISHER_ID + SEPARATOR + elem.toString().replace(/,/g, '')+ '\n');
+              if (FLAG)
+                writeStream.write(URL + PUBLISHER_ID + SEPARATOR + elem.toString().replace(/,/g, '') + '\,' + PUBLISHER_ID + SEPARATOR + elem.toString().replace(/,/g, '') + '\n');
               else
                 writeStream.write(URL + PUBLISHER_ID + SEPARATOR + elem.toString().replace(/,/g, '') + '\n');
-            genrated_sequence_count++;
+              genrated_sequence_count++;
             }
           }
         }
@@ -200,11 +204,11 @@ function generateCombinations(DATA, SEQUENCE_LENGTH,startIndex,endIndex) {
 writeStream.on('finish', () => {
   spinner.stop();
   console.timeEnd(SUCCESS_TEXT);
- 
-  
+
+
 });
 
-module.exports={
+module.exports = {
   validateInputs,
   generateCombinations
 }
